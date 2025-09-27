@@ -1,6 +1,7 @@
 tensorflow-cpu==2.16.1 
 keras==3.3.3
-streamlit
+gradio
 numpy
 pandas
+
 Pillow
