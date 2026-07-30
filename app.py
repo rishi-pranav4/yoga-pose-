@@ -6,11 +6,8 @@ from PIL import Image
 import os
 import pandas as pd
 
-# --- Configuration ---
 MODEL_PATH = 'yoga_pose_detector.h5'
 IMAGE_SIZE = (224, 224)
-# IMPORTANT: Replace these with the actual names found by your training script
-# The order must match the order Keras assigned during training (usually alphabetical).
 CLASS_NAMES = ['downdog', 'goddess', 'plank', 'tree', 'warrior2'] 
 NUM_CLASSES = len(CLASS_NAMES)
 
@@ -32,8 +29,7 @@ def preprocess_image(img):
     """Resizes and normalizes the image for the model."""
     img = img.resize(IMAGE_SIZE)
     img_array = image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
-    # Normalize the same way as training data (0-255 to 0-1)
+    img_array = np.expand_dims(img_array, axis=0) 
     img_array /= 255.0
     return img_array
 
@@ -45,7 +41,6 @@ def predict_pose(model, processed_img):
     confidence = predictions[0][predicted_class_index]
     return predicted_class_name, confidence,predictions
 
-# --- Streamlit Application Layout ---
 st.title("🧘 Yoga Pose Detector")
 st.markdown("Upload an image to classify one of the 5 trained yoga poses.")
 
@@ -58,13 +53,10 @@ if model is not None:
     )
 
     if uploaded_file is not None:
-        # Display the uploaded image
         img = Image.open(uploaded_file)
         st.image(img, caption='Uploaded Image', use_column_width=True)
         
-        # Add a placeholder for prediction progress
         with st.spinner('Analyzing Pose...'):
-            # Preprocess, predict, and display results
             processed_img = preprocess_image(img)
             pose, confidence, predictions = predict_pose(model, processed_img)
 
@@ -78,7 +70,6 @@ if model is not None:
                 delta=f"Confidence: {confidence*100:.2f}%"
             )
             
-            # Display the full list of confidences (optional)
             st.subheader("Confidence Scores")
             conf_df = pd.DataFrame({
                 'Pose': CLASS_NAMES,
